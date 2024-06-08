@@ -1,27 +1,32 @@
 from cryptography.hazmat.primitives.ciphers import aead
-import hashlib
-import hmac
-from ecdsa.keys import SigningKey, VerifyingKey
+from cryptography.hazmat.primitives import hashes, hmac
 import os
 from ECDH import *
 import socket
 
 
 def apply_hmac(key: bytes, msg: bytes) -> bytes:
-    h = hmac.new(key=key, msg=msg, digestmod=hashlib.sha256) # Simple function to generate an hmac for key and msg
-    return h.digest()
+    h = hmac.HMAC(key, hashes.SHA256()) # Simple function to generate an hmac for key and msg
+    h.update(msg)
+    return h.finalize()
+
+def create_ecdsa():
+    private_key = ec.generate_private_key(ec.SECP384R1())
+    with open("./ECDSA", "wb") as f:
+        f.write(private_key.private_bytes(Encoding.DER, PrivateFormat.PKCS8, NoEncryption()))
 
 
 def sign_ecdsa(msg: bytes) -> bytes:
-    with open("priv_key.pem", "rb") as f:
-        private_key = SigningKey.from_pem(f.read())
+    with open("./ECDSA", "rb") as f:
+        private_der = f.read()
+        private = load_der_private_key(private_der)
+    signature = private.sign(msg, ec.ECDSA(hashes.SHA256()))
+    return signature
 
-    return private_key.sign(msg)
-
+# Is msg the ct of the original msg?
 
 def verify_signature(msg: bytes, pub_key, signature) -> bool:
-    vk = VerifyingKey.from_string(bytes.fromhex(pub_key), hashfunc=hashlib.sha256)
-    return vk.verify(bytes.fromhex(signature), msg)
+    return pub_key.verify(signature, msg, ec.ECDSA(hashes.SHA256()))
 
 
 def encrypt_symmetric(msg: bytes, key: bytes, aad: bytes) -> tuple[bytes, bytes]:
