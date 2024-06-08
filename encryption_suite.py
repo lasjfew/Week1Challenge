@@ -4,18 +4,19 @@ import hmac
 from ecdsa.keys import SigningKey, VerifyingKey
 import os
 from ECDH import *
-import socket
+from socket import socket
+
 
 def apply_hmac(key: bytes, msg: bytes) -> bytes:
     h = hmac.new(key=key, msg=msg, digestmod=hashlib.sha256) # Simple function to generate an hmac for key and msg
     return h.digest()
 
 
-def sign_ecdsa(key: bytes, msg: bytes) -> tuple[bytes, bytes]:
-    private_key = SigningKey.generate(hashfunc=hashlib.sha256()) # Generate SigningKey object
-    public_key = private_key.verifying_key
+def sign_ecdsa(msg: bytes) -> bytes:
+    with open("priv_key.pem") as f:
+        private_key = SigningKey.from_pem(f.read())
 
-    return private_key.sign(msg), public_key
+    return private_key.sign(msg)
 
 
 def verify_signature(msg: bytes, pub_key, signature) -> bool:
@@ -36,7 +37,7 @@ def decrypt_symmetric(ct: bytes, nonce: bytes, key: bytes, aad: bytes) -> bytes:
     return pt
 
 
-def key_exchange(client_socket: socket.socket) -> bytes:
+def key_exchange(client_socket: socket) -> bytes:
     private_key = gen_private_key()
     write_private_bytes(private=private_key)
     write_public_bytes(private=private_key)

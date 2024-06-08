@@ -51,6 +51,7 @@ def client_handler(client_socket, client_address):
         if msg:
             print(f"Message received from {client_address}")
         aad = os.urandom(12)
+        msg = b"ACK"
         client_socket.send(encryption_suite.encrypt_symmetric(msg, symmetric_key, aad))
 
 
