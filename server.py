@@ -1,8 +1,6 @@
 import socket
 import encryption_suite
-import ecdsa
-from ecdsa.keys import SigningKey
-import hashlib
+from ECDH import *
 
 HOST_IP = socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12345
@@ -25,6 +23,12 @@ def main():
             print(f"Error: {e}")
             client_socket.close()
 
+    while True:
+        message = client_socket.recv(MSG_SIZE)
+        # print(f"Received from {client_address}: {message}")
+        encryption_suite.encrypt_symmetric("ACK", symmetric_key, )
+        client_socket.send()
+
 
 def client_handler(client_socket, client_address):
     print(f"Connection Established with {client_address}")
@@ -34,24 +38,39 @@ def client_handler(client_socket, client_address):
     # ECDH
     key = ""
 
+    symmetric_key = key_exchange(client_socket)
+
     # Symmetrically encrypted communication
     '''
     Probably make this a while True to keep entering
     commands to run the drone? Hardcode commands of
     up down left right forwards backwards
     '''
-    msg = ""
-    aad = os.urandom(12)
-    encryption_suite.encrypt_symmetric(msg, key, aad)
+    while True:
+        msg = client_socket.recv(MSG_SIZE)
+        if msg:
+            print(f"Message received from {client_address}")
+        aad = os.urandom(12)
+        client_socket.send(encryption_suite.encrypt_symmetric(msg, key, aad))
 
-    #Send
 
 def client_verify(client_socket) -> None:
 
     message = client_socket.recv(128)
-    pub_key = client_socket.recv(128)
+    # TODO: The server should have either the client's pubkey or signature before communication
     signature = client_socket.recv()
-    if encryption_suite.verify_signature(message, pub_key, signature):
+    if encryption_suite.verify_signature(message, get_peer_public_key(), signature):
         return
     else:
         raise AssertionError("Signature verification failed!")
+
+
+def key_exchange(client_socket: socket.socket) -> None:
+    private_key = gen_private_key()
+    write_private_bytes(private=private_key)
+    write_public_bytes(private=private_key)
+    public_key = get_public_key()
+    client_socket.send(public_key)
+    symmetric_key = derive_key(private_key, get_peer_public_key())
+    write_AES_key(symmetric_key)
+    return symmetric_key

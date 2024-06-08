@@ -1,5 +1,4 @@
 from TCP_Client import *
-from TCP_Server import *
 from ECDH import *
 from encryption_suite import *
 '''
