@@ -32,9 +32,19 @@ def client_handler(client_socket, client_address):
     client_verify(client_socket)
 
     # ECDH
+    key = ""
 
     # Symmetrically encrypted communication
+    '''
+    Probably make this a while True to keep entering
+    commands to run the drone? Hardcode commands of
+    up down left right forwards backwards
+    '''
+    msg = ""
+    aad = os.urandom(12)
+    encryption_suite.encrypt_symmetric(msg, key, aad)
 
+    #Send
 
 def client_verify(client_socket) -> None:
 

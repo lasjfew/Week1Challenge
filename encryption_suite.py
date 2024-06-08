@@ -10,7 +10,7 @@ def apply_hmac(key: bytes, msg: bytes) -> bytes:
     return h.digest()
 
 
-def sign_ecdsa(key: bytes, msg: bytes) -> (bytes, bytes):
+def sign_ecdsa(key: bytes, msg: bytes) -> tuple[bytes, bytes]:
     private_key = SigningKey.generate(hashfunc=hashlib.sha256()) # Generate SigningKey object
     verifying_key = private_key.get_verifying_key()
 
