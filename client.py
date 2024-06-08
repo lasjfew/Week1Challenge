@@ -1,15 +1,13 @@
 import socket
 from ECDH import *
 from TCP_Client import *
-import encryption_suite
-# Sync with server (drone)
+from encryption_suite import *
 
+MSG_SIZE = 1024
+ENCODER = "utf-8"
 
 def main():
-    '''
-    Start by generating new keys for ECDHE 
-    Should probably make this happen for every exchange
-    '''
+    msg = b''
     private_key = gen_private_key()
     write_private_bytes(private=private_key)
 
@@ -20,14 +18,30 @@ def main():
 
 # SEND SIGNATURE
 
-
+    client_socket.send(sign_ecdsa(b"PENTAGON"))
 
 # Key exchange
 
-    symmetric_key = encryption_suite.key_exchange(client_socket)
+    symmetric_key = key_exchange(client_socket)
 
 # Symmetrically encrypted communication
+    resend = False
 
+    while True:
+        if not resend:
+            msg = input("Message: ").encode(ENCODER)
+            aad = os.urandom(12)
+
+        ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
+        client_socket.send(ct)
+
+        # WAIT FOR ACK
+        nonce = client_socket.recv()
+        aad = client_socket.recv()
+        ct = client_socket.recv()
+        msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
+        if msg != "ACK":
+            resend = True
 
 
 if __name__ == "__main__":
