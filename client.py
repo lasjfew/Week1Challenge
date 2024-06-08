@@ -1,6 +1,6 @@
 import socket
 from ECDH import *
-from TCP_Client import *
+# from TCP_Client import *
 from encryption_suite import *
 
 MSG_SIZE = 1024
@@ -12,8 +12,7 @@ def main():
     private_key = gen_private_key()
     write_private_bytes(private=private_key)
 
-    remote_host, remote_port = [int(i) if i.isdigit() else i for i in
-                                input("Enter IP:port of remote connection: ").split(":")]
+    remote_host, remote_port = [int(i) if i.isdigit() else i for i in input("Enter IP:port of remote connection: ").split(":")]
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((remote_host, remote_port))
 

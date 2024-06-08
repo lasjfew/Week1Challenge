@@ -2,7 +2,7 @@ import socket
 import encryption_suite
 from ECDH import *
 
-HOST_IP = socket.gethostbyname(socket.gethostname())
+HOST_IP = "127.0.0.1" #socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12345
 MSG_SIZE = 1024
 ENCODER = "utf-8"
@@ -49,12 +49,15 @@ def client_handler(client_socket, client_address):
         client_socket.send(nonce)
         client_socket.send(ct)
 
-
+#client verif in server file???
 def client_verify(client_socket) -> None:
 
     message = client_socket.recv(128)
-    signature = client_socket.recv()
+    signature = client_socket.recv(1024)
     if encryption_suite.verify_signature(message, get_peer_public_key(), signature):
         return
     else:
         raise AssertionError("Signature verification failed!")
+
+if __name__ == "__main__":
+    main()

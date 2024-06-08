@@ -4,7 +4,7 @@ import hmac
 from ecdsa.keys import SigningKey, VerifyingKey
 import os
 from ECDH import *
-from socket import socket
+import socket
 
 
 def apply_hmac(key: bytes, msg: bytes) -> bytes:
@@ -13,7 +13,7 @@ def apply_hmac(key: bytes, msg: bytes) -> bytes:
 
 
 def sign_ecdsa(msg: bytes) -> bytes:
-    with open("priv_key.pem") as f:
+    with open("priv_key.pem", "rb") as f:
         private_key = SigningKey.from_pem(f.read())
 
     return private_key.sign(msg)
