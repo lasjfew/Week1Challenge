@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
 from cryptography.hazmat.primitives.serialization import NoEncryption
 
-from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, load_der_private_key, load_der_public_key
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, load_der_private_key, load_der_public_key
 
 
 
@@ -20,11 +20,11 @@ def gen_private_key():
 # Maybe check to see if folder exists and if so ignore? Otherwise writing to file seems redundant
 def write_private_bytes(private):
     with open("ECDH", "wb") as f:
-        f.write(private.private_bytes(Encoding("DER"), PrivateFormat("PKCS8"), NoEncryption()))
+        f.write(private.private_bytes(Encoding.DER, PrivateFormat.PKCS8, NoEncryption()))
 
 def write_public_bytes(private):
     with open("ECDH.pub", "wb") as f:
-        f.write(private.public_key().public_bytes(Encoding("DER"), PrivateFormat("PKCS8"), NoEncryption()))
+        f.write(private.public_key().public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
 
 '''
 Finish this function to interact with socket programming somehow
@@ -32,15 +32,18 @@ Finish this function to interact with socket programming somehow
 def get_public_key():
     with open("ECDH.pub", "rb") as g:
         data = g.read()
-        public = load_der_public_key(data, password=None)
+        public = load_der_public_key(data)
     return public
 
 def get_peer_public_key():
-    with open("PeerECDH.pub", "rb") as g:
+    with open("./PeerECDH.pub", "rb") as g:
         data = g.read()
-        public = load_der_public_key(data, password=None)
+        public = load_der_public_key(data)
     return public
 
+def write_AES_key(AES_key):
+    with open("./AES_128", "wb") as f:
+        f.write(AES_key)
 
 
 '''

@@ -20,7 +20,10 @@ public_key = get_public_key()
 send_key(clientSocket=clientSocket)
 peer_public_key = get_peer_public_key()
 AES_128_key = derive_key(private_key, peer_public_key)
+write_AES_key(AES_128_key)
 
-print(AES_128_key.decode())
+# list_AES = list(AES_128_key)
+# listTestByteAsHex = [int(hex(x).split('x')[-1]) for x in list_AES]
+# print(listTestByteAsHex)
 
 #Want to add certificate section here
