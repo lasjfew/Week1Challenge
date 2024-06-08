@@ -23,13 +23,14 @@ def sign_ecdsa(msg: bytes) -> bytes:
         private_der = f.read()
         private = load_der_private_key(private_der, None)
     signature = private.sign(msg, ec.ECDSA(hashes.SHA256()))
-    print(len(signature))
+    print(signature)
+    print("\n", len(signature))
     return signature
 
 # Is msg the ct of the original msg?
 
 def verify_signature(msg: bytes, pub_key, signature) -> bool:
-    return pub_key.verify(signature, msg, ec.ECDSA(hashes.SHA256()))
+    pub_key.verify(signature, msg, ec.ECDSA(hashes.SHA256()))
 
 
 def encrypt_symmetric(msg: bytes, key: bytes, aad: bytes) -> tuple[bytes, bytes]:

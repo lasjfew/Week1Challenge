@@ -19,8 +19,8 @@ def main():
         client_socket, client_address = server_socket.accept()
         try:
             client_handler(client_socket, client_address)
-        except AssertionError as e:
-            print(f"Error: {e}")
+        except:
+            print(f"Not verified, socket closing\n" + "-"*25)
             client_socket.close()
 
 
@@ -28,7 +28,7 @@ def client_handler(client_socket, client_address):
     print(f"Connection Established with {client_address}")
     # SIGNATURE CONFIRMATION
     client_verify(client_socket)
-
+    print("Verified!")
     # ECDH
 
     symmetric_key = encryption_suite.key_exchange(client_socket)
@@ -53,14 +53,11 @@ def client_handler(client_socket, client_address):
 #client verif in server file???
 def client_verify(client_socket) -> None:
 
-    signature = client_socket.recv(102)
-
+    signature = client_socket.recv(150)
+    print(signature)
     # Hardcoded message here
     message = b"PENTAGON"
-    if encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature):
-        return
-    else:
-        raise AssertionError("Signature verification failed!")
+    encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature)
 
 if __name__ == "__main__":
     main()
