@@ -30,7 +30,7 @@ def main():
     while True:
         if not resend:
             msg = input("Message: ").encode(ENCODER)
-            aad = os.urandom(12)
+            aad = b"Boo Valinor"
 
         ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(ct)
