@@ -1,7 +1,7 @@
 from TCP_Client import *
 from TCP_Server import *
 from ECDH import *
-
+from encryption_suite import *
 '''
 
 '''
@@ -18,12 +18,22 @@ public_key = get_public_key()
 
 #Generate shared AES-128 key using ECDH
 send_key(clientSocket=clientSocket)
+with open("./PeerECDH.pub", "wb") as g:
+    peer_private = gen_private_key()
+    g.write(peer_private.public_key().public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
+
 peer_public_key = get_peer_public_key()
 AES_128_key = derive_key(private_key, peer_public_key)
 write_AES_key(AES_128_key)
 
-# list_AES = list(AES_128_key)
-# listTestByteAsHex = [int(hex(x).split('x')[-1]) for x in list_AES]
-# print(listTestByteAsHex)
+# with open("./AES_128", "rb") as f:
+#     AES_128_key = f.read()
+msg = "Valinor Sucks"
+ct, iv = encrypt_symmetric(msg.encode(), AES_128_key)
+print("The cipher text is: ", ct, "\nThe iv is: ", iv)
+
+pt = decrypt_symmetric(ct, iv, AES_128_key)
+print(pt.decode())   
 
 #Want to add certificate section here
+# 127.0.0.1

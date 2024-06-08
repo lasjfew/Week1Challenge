@@ -52,7 +52,7 @@ make sure that HKDFExpand isn't necessary for this module.
 '''
 def derive_key(private, peer_public):
     shared_key = private.exchange(ec.ECDH(), peer_public)
-    derived_key = HKDF(algorithm=hashes.SHA256(),length=128,salt=b'',info=b'',).derive(shared_key)
+    derived_key = HKDF(algorithm=hashes.SHA256(),length=32,salt=b'',info=b'',).derive(shared_key)
     return derived_key
         
 '''
