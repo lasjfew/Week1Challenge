@@ -28,11 +28,12 @@ write_AES_key(AES_128_key)
 
 # with open("./AES_128", "rb") as f:
 #     AES_128_key = f.read()
-msg = "Valinor Sucks"
-ct, iv = encrypt_symmetric(msg.encode(), AES_128_key)
+aad = "Valinor Sucks"
+msg = "This shit work?"
+ct, iv = encrypt_symmetric(msg.encode(), AES_128_key, aad.encode())
 print("The cipher text is: ", ct, "\nThe iv is: ", iv)
 
-pt = decrypt_symmetric(ct, iv, AES_128_key)
+pt = decrypt_symmetric(ct, iv, AES_128_key, aad.encode())
 print(pt.decode())   
 
 #Want to add certificate section here
