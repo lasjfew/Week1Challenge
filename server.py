@@ -36,7 +36,6 @@ def client_handler(client_socket, client_address):
     client_verify(client_socket)
 
     # ECDH
-    key = ""
 
     symmetric_key = encryption_suite.key_exchange(client_socket)
 
@@ -50,7 +49,7 @@ def client_handler(client_socket, client_address):
         msg = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
-        aad = os.urandom(12)
+        aad = b"Boo Valinor"
         msg = b"ACK"
         client_socket.send(encryption_suite.encrypt_symmetric(msg, symmetric_key, aad))
 
