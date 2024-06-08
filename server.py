@@ -52,9 +52,11 @@ def client_handler(client_socket, client_address):
 #client verif in server file???
 def client_verify(client_socket) -> None:
 
-    message = client_socket.recv(128)
-    signature = client_socket.recv(1024)
-    if encryption_suite.verify_signature(message, get_peer_public_key(), signature):
+    signature = client_socket.recv(102)
+
+    # Hardcoded message here
+    message = b"PENTAGON"
+    if encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature):
         return
     else:
         raise AssertionError("Signature verification failed!")

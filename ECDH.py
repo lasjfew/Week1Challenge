@@ -6,9 +6,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
-from cryptography.hazmat.primitives.serialization import NoEncryption
-
-from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, load_der_private_key, \
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption, load_der_private_key, \
     load_der_public_key
 
 
@@ -43,6 +41,12 @@ def get_public_key():
 
 def get_peer_public_key():
     with open("./PeerECDH.pub", "rb") as g:
+        data = g.read()
+        public = load_der_public_key(data)
+    return public
+
+def get_peer_public_key_ecdsa():
+    with open("./ECDSA.pub", "rb") as g:
         data = g.read()
         public = load_der_public_key(data)
     return public
