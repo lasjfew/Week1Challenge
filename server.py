@@ -23,12 +23,6 @@ def main():
             print(f"Error: {e}")
             client_socket.close()
 
-    while True:
-        message = client_socket.recv(MSG_SIZE)
-        # print(f"Received from {client_address}: {message}")
-        encryption_suite.encrypt_symmetric("ACK", symmetric_key, )
-        client_socket.send()
-
 
 def client_handler(client_socket, client_address):
     print(f"Connection Established with {client_address}")
@@ -51,7 +45,9 @@ def client_handler(client_socket, client_address):
             print(f"Message received from {client_address}")
         aad = b"Boo Valinor"
         msg = b"ACK"
-        client_socket.send(encryption_suite.encrypt_symmetric(msg, symmetric_key, aad))
+        ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
+        client_socket.send(nonce)
+        client_socket.send(ct)
 
 
 def client_verify(client_socket) -> None:

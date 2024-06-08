@@ -44,5 +44,5 @@ def key_exchange(client_socket: socket) -> bytes:
     public_key = get_public_key()
     client_socket.send(public_key)
     symmetric_key = derive_key(private_key, get_peer_public_key())
-    write_AES_key(symmetric_key)
+    write_aes_key(symmetric_key)
     return symmetric_key

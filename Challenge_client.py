@@ -23,7 +23,7 @@ with open("./PeerECDH.pub", "wb") as g:
 
 peer_public_key = get_peer_public_key()
 AES_128_key = derive_key(private_key, peer_public_key)
-write_AES_key(AES_128_key)
+write_aes_key(AES_128_key)
 
 # with open("./AES_128", "rb") as f:
 #     AES_128_key = f.read()
