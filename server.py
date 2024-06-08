@@ -45,6 +45,7 @@ def client_handler(client_socket, client_address):
             print(f"Message received from {client_address}")
         aad = b"Boo Valinor"
         msg = b"ACK"
+        # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
         ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(nonce)
         client_socket.send(ct)
