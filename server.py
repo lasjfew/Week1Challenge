@@ -41,24 +41,28 @@ def client_handler(client_socket, client_address):
     up down left right forwards backwards
     '''
     while True:
-        print("In while true")
         msg = client_socket.recv(MSG_SIZE)
+        nonce = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
         aad = b"Boo Valinor"
-        msg = b"ACK"
-        # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
-        ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
-        client_socket.send(nonce)
-        client_socket.send(ct)
+        pt = encryption_suite.decrypt_symmetric(msg,nonce, symmetric_key, aad)
+        print(pt.decode())
+        # # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
+        # ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
+        # client_socket.send(nonce)
+        # client_socket.send(ct)
 
 #client verif in server file???
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)
+    print(signature)
     # Hardcoded message here
     message = b"PENTAGON"
     encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature)
+    print("Done with verification")
+
 
 if __name__ == "__main__":
     main()
