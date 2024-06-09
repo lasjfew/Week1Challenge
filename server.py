@@ -4,7 +4,7 @@ from ECDH import *
 import time
 
 HOST_IP = "192.168.0.171" #socket.gethostbyname(socket.gethostname())
-HOST_PORT = 12345
+HOST_PORT = 54321
 MSG_SIZE = 1024
 ENCODER = "utf-8"
 server_running = True
@@ -40,13 +40,19 @@ def client_handler(client_socket, client_address):
     # Symmetrically encrypted communication
     while True:
         msg = client_socket.recv(MSG_SIZE)
-        nonce = client_socket.recv(MSG_SIZE)
-        aad = client_socket.recv(MSG_SIZE)
+        nonce_and_aad = client_socket.recv(MSG_SIZE)
+        nonce = nonce_and_aad[:12]
+        aad = nonce_and_aad[12:]
         if msg:
             print(f"Message received from {client_address}")
         pt = encryption_suite.decrypt_symmetric(msg, nonce, symmetric_key, aad)
         ts = float(aad.decode()[12:])
         cur_time = time.time()
+        difference = cur_time-ts
+        if difference> 0.13:
+            print("Message denied")
+        else:
+            print("Message accepted")
         print("ts is: ", ts, " and current time is ",cur_time, ". Difference is ", float(ts)-cur_time)
         print(pt.decode(ENCODER))
 
