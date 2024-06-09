@@ -4,7 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
-from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption, load_der_private_key, \
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat, NoEncryption, \
     load_der_public_key
 
 
@@ -12,20 +12,6 @@ def gen_private_key():
     private = ec.generate_private_key(ec.SECP384R1())
     return private
 
-
-def get_public_key(private):
-    private.public_key()
-    with open("ECDH.pub", "rb") as g:
-        data = g.read()
-        public = load_der_public_key(data)
-    return public
-
-#Maybe useless now
-def get_peer_public_key():
-    with open("./PeerECDH.pub", "rb") as g:
-        data = g.read()
-        public = load_der_public_key(data)
-    return public
 
 def get_peer_public_key_ecdsa():
     with open("./ECDSA.pub", "rb") as g:
@@ -51,17 +37,6 @@ def derive_key(private, peer_public):
     return derived_key
 
 
-'''
-Don't need this function as derive_key generates AES key
-'''
-
-
-def encrypt_ecdh(derived_key, msg):
-    encrypted_data = derived_key.encrypt(msg.encode())
-    return encrypted_data
-
-
-# Socket programming here
 '''
 shared = private.exchange(ec.ECDH(), public)
 
