@@ -46,11 +46,7 @@ def client_handler(client_socket, client_address):
         pt = encryption_suite.decrypt_symmetric(msg, nonce, symmetric_key, aad)
         print(pt.decode(ENCODER))
 
-        # ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
-        # client_socket.send(nonce)
-        # client_socket.send(ct)
 
-#client verif in server file???
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)
