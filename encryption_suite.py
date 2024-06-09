@@ -52,6 +52,7 @@ def key_exchange(client_socket: socket) -> bytes:
     write_public_bytes(private=private_key)
     public_key = get_public_key()
     client_socket.send(public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
-    symmetric_key = derive_key(private_key, get_peer_public_key())
+    peer_public_key = client_socket.recv(1024)
+    symmetric_key = derive_key(private_key, load_der_public_key(peer_public_key))
     write_aes_key(symmetric_key)
     return symmetric_key

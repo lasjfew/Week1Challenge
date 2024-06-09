@@ -36,7 +36,7 @@ def get_public_key():
         public = load_der_public_key(data)
     return public
 
-
+#Maybe useless now
 def get_peer_public_key():
     with open("./PeerECDH.pub", "rb") as g:
         data = g.read()
