@@ -2,7 +2,7 @@ import socket
 import encryption_suite
 from ECDH import *
 
-HOST_IP = "127.0.0.1" #socket.gethostbyname(socket.gethostname())
+HOST_IP = "192.168.0.171" #socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12345
 MSG_SIZE = 1024
 ENCODER = "utf-8"
@@ -20,11 +20,9 @@ def main():
         try:
             client_handler(client_socket, client_address)
         except Exception as e:
+            print(f'Error is {e}')
             print(f"Not verified, socket closing\n" + "-"*25)
-            print(f"Error: {e}")
             client_socket.close()
-
-    server_socket.close()
 
 
 def client_handler(client_socket, client_address):
@@ -35,7 +33,7 @@ def client_handler(client_socket, client_address):
     # ECDH
 
     symmetric_key = encryption_suite.key_exchange(client_socket)
-
+    print("Keys Exchanged!")
     # Symmetrically encrypted communication
     '''
     Probably make this a while True to keep entering
@@ -44,18 +42,18 @@ def client_handler(client_socket, client_address):
     '''
     while True:
         msg = client_socket.recv(MSG_SIZE)
+        nonce = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
         aad = b"Boo Valinor"
-        msg = b"ACK"
-        # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
-        ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
-        client_socket.send(nonce)
-        client_socket.send(ct)
+        pt = encryption_suite.decrypt_symmetric(msg,nonce, symmetric_key, aad)
+        print(pt.decode())
+        # # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
+        # ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
+        # client_socket.send(nonce)
+        # client_socket.send(ct)
 
 #client verif in server file???
-
-
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)
@@ -63,6 +61,8 @@ def client_verify(client_socket) -> None:
     # Hardcoded message here
     message = b"PENTAGON"
     encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature)
+    print("Done with verification")
+
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,15 @@
+'''
+Notes:
+    Do we generate a new iv each time?
+    Should be count with iv and not regenerate
+    ECDHE maybe?
+    Send new aad everytime with timestamp. After decryption check that time is within
+    10ms?, so only so many packets can be sent?
+'''
+
+import socket
+from ECDH import *
+# from TCP_Client import *
 from encryption_suite import *
 
 MSG_SIZE = 1024
@@ -22,23 +34,23 @@ def main():
     symmetric_key = key_exchange(client_socket)
 
 # Symmetrically encrypted communication
-    resend = False
+    # resend = False
 
     while True:
-        if not resend:
-            msg = input("Message: ").encode(ENCODER)
-        msg_w_hmac = msg + apply_hmac(symmetric_key, msg)
+        
+        msg = input("Message: ").encode(ENCODER)
 
         aad = b"Boo Valinor"
-        ct, nonce = encrypt_symmetric(msg_w_hmac, symmetric_key, aad)
+        ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(ct)
+        client_socket.send(nonce)
 
         # WAIT FOR ACK
-        nonce = client_socket.recv(12)
-        ct = client_socket.recv() # Should accept some fixed len ct for "RES" or "ACK"
-        msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
-        if msg != "ACK":
-            resend = True
+        # nonce = client_socket.recv(12)
+        # ct = client_socket.recv(1024)
+        # msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
+        # if msg != "ACK":
+        #     resend = True
 
 
 if __name__ == "__main__":

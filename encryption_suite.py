@@ -25,7 +25,6 @@ def sign_ecdsa(msg: bytes) -> bytes:
         private = load_der_private_key(private_der, None)
     signature = private.sign(msg, ec.ECDSA(hashes.SHA256()))
     print(signature)
-    print("\n", len(signature))
     return signature
 
 
@@ -49,11 +48,13 @@ def decrypt_symmetric(ct: bytes, nonce: bytes, key: bytes, aad: bytes) -> bytes:
 
 
 def key_exchange(client_socket: socket) -> bytes:
+    print("What is going on")
     private_key = gen_private_key()
     write_private_bytes(private=private_key)
     write_public_bytes(private=private_key)
     public_key = get_public_key()
     client_socket.send(public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
-    symmetric_key = derive_key(private_key, get_peer_public_key())
+    peer_public_key = client_socket.recv(1024)
+    symmetric_key = derive_key(private_key, load_der_public_key(peer_public_key))
     write_aes_key(symmetric_key)
     return symmetric_key
