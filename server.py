@@ -2,7 +2,7 @@ import socket
 import encryption_suite
 from ECDH import *
 
-HOST_IP = "127.0.0.1" #socket.gethostbyname(socket.gethostname())
+HOST_IP = "192.168.0.171" #socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12345
 MSG_SIZE = 1024
 ENCODER = "utf-8"
@@ -19,7 +19,8 @@ def main():
         client_socket, client_address = server_socket.accept()
         try:
             client_handler(client_socket, client_address)
-        except:
+        except Exception as e:
+            print(f'Error is {e}')
             print(f"Not verified, socket closing\n" + "-"*25)
             client_socket.close()
 
