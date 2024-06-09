@@ -32,7 +32,7 @@ def client_handler(client_socket, client_address):
     # ECDH
 
     symmetric_key = encryption_suite.key_exchange(client_socket)
-
+    print("Keys Exchanged!")
     # Symmetrically encrypted communication
     '''
     Probably make this a while True to keep entering
@@ -40,6 +40,7 @@ def client_handler(client_socket, client_address):
     up down left right forwards backwards
     '''
     while True:
+        print("In while true")
         msg = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
@@ -54,7 +55,6 @@ def client_handler(client_socket, client_address):
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)
-    print(signature)
     # Hardcoded message here
     message = b"PENTAGON"
     encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature)

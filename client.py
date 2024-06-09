@@ -37,7 +37,7 @@ def main():
 
         # WAIT FOR ACK
         nonce = client_socket.recv(12)
-        ct = client_socket.recv() # Should accept some fixed len ct for "RES" or "ACK"
+        ct = client_socket.recv(1024)
         msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
         if msg != "ACK":
             resend = True
