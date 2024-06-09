@@ -49,6 +49,7 @@ def client_handler(client_socket, client_address):
         ts = float(aad.decode()[12:])
         cur_time = time.time()
         difference = cur_time-ts
+        print(difference)
         if difference> 0.13:
             print("Message denied")
         else:
@@ -59,7 +60,6 @@ def client_handler(client_socket, client_address):
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)
-    print(signature)
     # Hardcoded message here
     message = b"PENTAGON"
     encryption_suite.verify_signature(message, get_peer_public_key_ecdsa(), signature)
