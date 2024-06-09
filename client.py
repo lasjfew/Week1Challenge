@@ -1,3 +1,12 @@
+'''
+Notes:
+    Do we generate a new iv each time?
+    Should be count with iv and not regenerate
+    ECDHE maybe?
+    Send new aad everytime with timestamp. After decryption check that time is within
+    10ms?, so only so many packets can be sent?
+'''
+
 import socket
 from ECDH import *
 # from TCP_Client import *
