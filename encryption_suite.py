@@ -1,14 +1,7 @@
 from cryptography.hazmat.primitives.ciphers import aead
-from cryptography.hazmat.primitives import hmac
 import os
 from ECDH import *
 import socket
-
-
-def apply_hmac(key: bytes, msg: bytes) -> bytes:
-    h = hmac.HMAC(key, hashes.SHA256())  # Simple function to generate an hmac for key and msg
-    h.update(msg)
-    return h.finalize()
 
 
 def create_ecdsa():
@@ -50,9 +43,7 @@ def decrypt_symmetric(ct: bytes, nonce: bytes, key: bytes, aad: bytes) -> bytes:
 def key_exchange(client_socket: socket) -> bytes:
     print("What is going on")
     private_key = gen_private_key()
-    write_private_bytes(private=private_key)
-    write_public_bytes(private=private_key)
-    public_key = get_public_key()
+    public_key = private_key.public_key()
     client_socket.send(public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
     peer_public_key = client_socket.recv(1024)
     symmetric_key = derive_key(private_key, load_der_public_key(peer_public_key))

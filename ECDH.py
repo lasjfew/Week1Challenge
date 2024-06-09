@@ -13,24 +13,8 @@ def gen_private_key():
     return private
 
 
-# Write public bytes over network to create shared key
-# Maybe check to see if folder exists and if so ignore? Otherwise writing to file seems redundant
-def write_private_bytes(private):
-    with open("ECDH", "wb") as f:
-        f.write(private.private_bytes(Encoding.DER, PrivateFormat.PKCS8, NoEncryption()))
-
-
-def write_public_bytes(private):
-    with open("ECDH.pub", "wb") as f:
-        f.write(private.public_key().public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
-
-
-'''
-Finish this function to interact with socket programming somehow
-'''
-
-
-def get_public_key():
+def get_public_key(private):
+    private.public_key()
     with open("ECDH.pub", "rb") as g:
         data = g.read()
         public = load_der_public_key(data)

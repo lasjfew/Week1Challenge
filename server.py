@@ -27,28 +27,25 @@ def main():
 
 def client_handler(client_socket, client_address):
     print(f"Connection Established with {client_address}")
+
     # SIGNATURE CONFIRMATION
     client_verify(client_socket)
     print("Verified!")
-    # ECDH
 
+    # ECDH
     symmetric_key = encryption_suite.key_exchange(client_socket)
     print("Keys Exchanged!")
+
     # Symmetrically encrypted communication
-    '''
-    Probably make this a while True to keep entering
-    commands to run the drone? Hardcode commands of
-    up down left right forwards backwards
-    '''
     while True:
         msg = client_socket.recv(MSG_SIZE)
         nonce = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
         aad = b"Boo Valinor"
-        pt = encryption_suite.decrypt_symmetric(msg,nonce, symmetric_key, aad)
-        print(pt.decode())
-        # # TODO: ADD HMAC CODE BEFORE ACKNOWLEDGING
+        pt = encryption_suite.decrypt_symmetric(msg, nonce, symmetric_key, aad)
+        print(pt.decode(ENCODER))
+
         # ct, nonce = encryption_suite.encrypt_symmetric(msg, symmetric_key, aad)
         # client_socket.send(nonce)
         # client_socket.send(ct)
