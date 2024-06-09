@@ -1,14 +1,15 @@
 from cryptography.hazmat.primitives.ciphers import aead
-from cryptography.hazmat.primitives import hashes, hmac
+from cryptography.hazmat.primitives import hmac
 import os
 from ECDH import *
 import socket
 
 
 def apply_hmac(key: bytes, msg: bytes) -> bytes:
-    h = hmac.HMAC(key, hashes.SHA256()) # Simple function to generate an hmac for key and msg
+    h = hmac.HMAC(key, hashes.SHA256())  # Simple function to generate an hmac for key and msg
     h.update(msg)
     return h.finalize()
+
 
 def create_ecdsa():
     private_key = ec.generate_private_key(ec.SECP384R1())
@@ -26,6 +27,7 @@ def sign_ecdsa(msg: bytes) -> bytes:
     print(signature)
     print("\n", len(signature))
     return signature
+
 
 # Is msg the ct of the original msg?
 

@@ -19,9 +19,12 @@ def main():
         client_socket, client_address = server_socket.accept()
         try:
             client_handler(client_socket, client_address)
-        except:
+        except Exception as e:
             print(f"Not verified, socket closing\n" + "-"*25)
+            print(f"Error: {e}")
             client_socket.close()
+
+    server_socket.close()
 
 
 def client_handler(client_socket, client_address):
@@ -51,6 +54,8 @@ def client_handler(client_socket, client_address):
         client_socket.send(ct)
 
 #client verif in server file???
+
+
 def client_verify(client_socket) -> None:
 
     signature = client_socket.recv(150)

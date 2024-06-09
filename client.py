@@ -1,6 +1,3 @@
-import socket
-from ECDH import *
-# from TCP_Client import *
 from encryption_suite import *
 
 MSG_SIZE = 1024
@@ -30,9 +27,10 @@ def main():
     while True:
         if not resend:
             msg = input("Message: ").encode(ENCODER)
+        msg_w_hmac = msg + apply_hmac(symmetric_key, msg)
 
         aad = b"Boo Valinor"
-        ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
+        ct, nonce = encrypt_symmetric(msg_w_hmac, symmetric_key, aad)
         client_socket.send(ct)
 
         # WAIT FOR ACK
