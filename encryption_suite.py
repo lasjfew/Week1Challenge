@@ -24,7 +24,6 @@ def sign_ecdsa(msg: bytes) -> bytes:
         private = load_der_private_key(private_der, None)
     signature = private.sign(msg, ec.ECDSA(hashes.SHA256()))
     print(signature)
-    print("\n", len(signature))
     return signature
 
 # Is msg the ct of the original msg?
@@ -47,6 +46,7 @@ def decrypt_symmetric(ct: bytes, nonce: bytes, key: bytes, aad: bytes) -> bytes:
 
 
 def key_exchange(client_socket: socket) -> bytes:
+    print("What is going on")
     private_key = gen_private_key()
     write_private_bytes(private=private_key)
     write_public_bytes(private=private_key)
