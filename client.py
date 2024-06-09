@@ -25,13 +25,14 @@ def main():
         
         msg = input("Message: ").encode(ENCODER)
 
-        aad = b"Boo Valinor"
+        aad = b"Boo Valinor " + str(time.time()).encode()
         aad_w_ts = aad + struct.pack('f', time.time())
         # TODO: MAY NEED TO USE COUNTER INSTEAD, AS BOTH SIDES MUST KNOW AAD.. MAYBE
 
-        ct, nonce = encrypt_symmetric(msg, symmetric_key, aad_w_ts)
+        ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(ct)
         client_socket.send(nonce)
+        client_socket.send(aad)
 
 
 if __name__ == "__main__":

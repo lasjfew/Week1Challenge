@@ -43,11 +43,9 @@ def decrypt_symmetric(ct: bytes, nonce: bytes, key: bytes, aad: bytes) -> bytes:
 
 
 def key_exchange(client_socket: socket) -> bytes:
-    print("What is going on")
     private_key = gen_private_key()
     public_key = private_key.public_key()
     client_socket.send(public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo))
     peer_public_key = client_socket.recv(1024)
     symmetric_key = derive_key(private_key, load_der_public_key(peer_public_key))
-    write_aes_key(symmetric_key)
     return symmetric_key

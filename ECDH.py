@@ -19,10 +19,6 @@ def get_peer_public_key_ecdsa():
     return public
 
 
-def write_aes_key(aes_key):
-    with open("./AES_128", "wb") as f:
-        f.write(aes_key)
-
 
 '''
 Generates shared symmetric key, think about adding info for randomness (e.g. 'Death to Valinor') and 
@@ -48,4 +44,4 @@ https://soatok.blog/2021/11/17/understanding-hkdf/
 And what do I do after this
 '''
 
-# derived = HKDF(algorithm=hashes.SHA256(),length=32,salt=b'',info=b'',).derive(shared)
+

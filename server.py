@@ -1,6 +1,7 @@
 import socket
 import encryption_suite
 from ECDH import *
+import time
 
 HOST_IP = "192.168.0.171" #socket.gethostbyname(socket.gethostname())
 HOST_PORT = 12345
@@ -40,10 +41,13 @@ def client_handler(client_socket, client_address):
     while True:
         msg = client_socket.recv(MSG_SIZE)
         nonce = client_socket.recv(MSG_SIZE)
+        aad = client_socket.recv(MSG_SIZE)
         if msg:
             print(f"Message received from {client_address}")
-        aad = b"Boo Valinor"
         pt = encryption_suite.decrypt_symmetric(msg, nonce, symmetric_key, aad)
+        ts = float(aad.decode()[12:])
+        cur_time = time.time()
+        print("ts is: ", ts, " and current time is ",cur_time, ". Difference is ", float(ts)-cur_time)
         print(pt.decode(ENCODER))
 
 
