@@ -19,7 +19,6 @@ def sign_ecdsa(msg: bytes) -> bytes:
         private_der = f.read()
         private = load_der_private_key(private_der, None)
     signature = private.sign(msg, ec.ECDSA(hashes.SHA256()))
-    print(signature)
     return signature
 
 
