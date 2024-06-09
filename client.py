@@ -25,22 +25,23 @@ def main():
     symmetric_key = key_exchange(client_socket)
 
 # Symmetrically encrypted communication
-    resend = False
+    # resend = False
 
     while True:
-        if not resend:
-            msg = input("Message: ").encode(ENCODER)
+        
+        msg = input("Message: ").encode(ENCODER)
 
         aad = b"Boo Valinor"
         ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(ct)
+        client_socket.send(nonce)
 
         # WAIT FOR ACK
-        nonce = client_socket.recv(12)
-        ct = client_socket.recv(1024)
-        msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
-        if msg != "ACK":
-            resend = True
+        # nonce = client_socket.recv(12)
+        # ct = client_socket.recv(1024)
+        # msg = decrypt_symmetric(ct, nonce, symmetric_key, aad)
+        # if msg != "ACK":
+        #     resend = True
 
 
 if __name__ == "__main__":
