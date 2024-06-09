@@ -6,9 +6,8 @@ from ECDH import *
 import socket
 
 # Used once to create the ECDSA key for the server
-'''
-MAYBE REMOVE
-'''
+# Could be used to create a pair when initially setting up server
+# However two keys are included for example usage
 def create_ecdsa():
     private_key = ec.generate_private_key(ec.SECP384R1())
     with open("./ECDSA", "wb") as f:
