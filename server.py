@@ -53,7 +53,6 @@ def client_handler(client_socket, client_address):
             print("Message denied")
         else:
             print("Message accepted")
-        print("ts is: ", ts, " and current time is ",cur_time, ". Difference is ", float(ts)-cur_time)
         print(pt.decode(ENCODER))
 
 
