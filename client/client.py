@@ -30,8 +30,7 @@ def main():
         aad = b"Boo Valinor " + str(time.time()).encode()
         ct, nonce = encrypt_symmetric(msg, symmetric_key, aad)
         client_socket.send(ct)
-        client_socket.send(nonce)
-        client_socket.send(aad)
+        client_socket.send(nonce+aad)
 
 
 if __name__ == "__main__":
